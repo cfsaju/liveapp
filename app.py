@@ -28,7 +28,11 @@ def health():
 @app.route('/info')  #To print pod name and IP
 def info():
     pod_name = os.getenv('HOSTNAME', 'Unknown')
-    pod_ip = socket.gethostbyname(socket.gethostname())
+    try:
+        pod_ip = socket.gethostbyname(socket.gethostname())
+    except socket.gaierror:
+        pod_ip = "Unable to determine IP"
+    
     return jsonify({"pod_name": pod_name, "pod_ip": pod_ip}), 200
 
 if __name__ == '__main__':
