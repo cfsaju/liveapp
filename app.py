@@ -1,3 +1,5 @@
+import os
+import socket
 from flask import Flask, jsonify
 from prometheus_client import Counter, generate_latest
 
