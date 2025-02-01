@@ -25,5 +25,11 @@ def metrics():
 def health():
     return jsonify({"status": "healthy"}), 200
 
+@app.route('/info')  #To print pod name and IP
+def info():
+    pod_name = os.getenv('HOSTNAME', 'Unknown')
+    pod_ip = socket.gethostbyname(socket.gethostname())
+    return jsonify({"pod_name": pod_name, "pod_ip": pod_ip}), 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)

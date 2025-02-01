@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: liveappdeployment
+  labels:
+    app: liveapp
+    
+spec:
+  replicas : 2
+  selector:
+    matchLabels:
+      app: liveapp
+  template:
+    metadata:
+      labels:
+        app: liveapp
+    spec:
+      containers:
+      - name: liveapp
+        image: cfsaju/liveapp
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            tcpSocket:
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            tcpSocket:
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: liveapp-service
+  labels:
+    name: liveapp
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30002
+  selector:
+    app: liveapp
+  
